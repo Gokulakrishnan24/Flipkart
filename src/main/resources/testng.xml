@@ -1,0 +1,24 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="MyTestSuite">
+
+    <listeners>
+        <listener class-name="listeners.ScreenshotListener"/>
+    </listeners>
+
+    <test name="MyTests">
+        <classes>
+            <class name="tests.FlipkartTest"/>
+            <!-- add other test classes here -->
+        </classes>
+    </test>
+</suite>
+
+
+<suite name="ParallelSuite" parallel="classes" thread-count="2">
+<test name="ParallelTests">
+    <classes>
+        <class name="tests.FlipkartTest"/>
+        <class name="tests.AnotherTest"/> <!-- Add more test classes as needed -->
+    </classes>
+</test>
+</suite>
