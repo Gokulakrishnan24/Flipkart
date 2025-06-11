@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 <suite name="FlipkartTestSuite">
-    <test name="LoginTests">
+    <test name="FlipkartTest">
         <classes>
             <class name="pages.LoginPageTest"/>
             <class name="tests.FlipkartAddToCartTest"/>
