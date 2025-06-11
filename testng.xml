@@ -2,6 +2,7 @@
 <suite name="FlipkartTestSuite">
     <test name="LoginTests">
         <classes>
+            <class name="pages.LoginPageTest"/>
             <class name="tests.FlipkartAddToCartTest"/>
         </classes>
     </test>
