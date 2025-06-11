@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="MyTestSuite" parallel="classes" thread-count="2">
+
+    <listeners>
+        <listener class-name="listeners.ScreenshotListener"/>
+    </listeners>
+
+    <test name="Flipkart Tests">
+        <classes>
+            <class name="tests.FlipkartAddToCartTest"/>
+<!--            <class name="tests.AnotherTest"/> &lt;!&ndash; Add others if needed &ndash;&gt;-->
+        </classes>
+    </test>
+
+</suite>

@@ -3,16 +3,16 @@ package pages;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-public class LoginPage {
+public class LoginPageTest {
 
-    private static final Logger log = LogManager.getLogger(LoginPage.class);
+    private static final Logger log = LogManager.getLogger(LoginPageTest.class);
 
     @Test
     public void loginFlipkart() {

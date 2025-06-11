@@ -13,9 +13,9 @@ import java.io.File;
 import java.io.IOException;
 
 
-public class FlipkartTest extends TestBase {
+public class FlipkartAddToCartTest extends TestBase {
 
-    private static final Logger logger = LogManager.getLogger(FlipkartTest.class);
+    private static final Logger logger = LogManager.getLogger(FlipkartAddToCartTest.class);
 
     @Test
     public void completeFlow() {
