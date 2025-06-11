@@ -16,6 +16,22 @@
     </properties>
 
     <build>
+
+            <testResources>
+                <testResource>
+                    <directory>src/test/resources</directory>
+                    <includes>
+                        <include>**/*.xml</include>
+                    </includes>
+                </testResource>
+                <testResource>
+                    <directory>${project.basedir}</directory>
+                    <includes>
+                        <include>testng.xml</include>
+                    </includes>
+                </testResource>
+            </testResources>
+
         <plugins>
             <!-- Maven Compiler Plugin -->
             <plugin>
