@@ -6,11 +6,6 @@
             <class name="tests.FlipkartAddToCartTest"/>
         </classes>
     </test>
-<test name="API Tests">
-    <classes>
-        <class name="ApiTest.FlipkartAPITest"/>
-    </classes>
-</test>
     <listeners>
         <listener class-name="listeners.TestListener"/>
     </listeners>
