@@ -1,98 +1,87 @@
 package pages;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import utils.DriverManager;
+
 import java.time.Duration;
-import java.util.ArrayList;
+import java.util.List;
 
 public class FlipkartHomePage {
 
-    private static final Logger log = LogManager.getLogger(FlipkartHomePage.class);
-    WebDriver driver;
+    private WebDriver driver;
+    private WebDriverWait wait;
 
+    // ✅ Constructor
     public FlipkartHomePage(WebDriver driver) {
         this.driver = driver;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
-    By loginPopupClose = By.cssSelector("button._2KpZ6l._2doB4z");
-    By searchInput = By.name("q");
-    By firstProduct = By.className("KzDlHZ");
-    By cartTotalCount = By.className("p6sArZ"); // or your correct selector
-    By addToCartBtn = By.className("NwyjNT");
+    // ✅ Locators
+    private By loginPopupCloseBtn = By.cssSelector("button._2KpZ6l._2doB4z");
+    private By searchBox = By.name("q");
+    private By searchBtn = By.cssSelector("button[type='submit']");
+    private By productTitles = By.className("tUxRFH");
 
+    private By addToCartBtn = By.xpath("//button[contains(text(),'Add to cart')]");
+    private By cartIcon = By.cssSelector("a[title='Cart']"); // Adjust if needed
+    private By cartItem = By.cssSelector("a._2Kn22P.gBNbID"); // Or actual cart item selector
+
+    // ✅ Actions
     public void loginPopupClose() {
         try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-            wait.until(ExpectedConditions.elementToBeClickable(loginPopupClose)).click();
-            log.info("✅ Login popup closed.");
-        } catch (TimeoutException e) {
-            log.warn("⚠️ Login popup not found or not clickable.");
+            WebElement closeBtn = wait.until(ExpectedConditions.elementToBeClickable(loginPopupCloseBtn));
+            closeBtn.click();
         } catch (Exception e) {
-            log.error("❌ Unexpected error while closing login popup", e);
+            System.out.println("Login popup not displayed or already closed.");
         }
     }
 
     public void searchProduct(String productName) {
-        try {
-            driver.findElement(searchInput).sendKeys(productName);
-            driver.findElement(searchInput).submit();
-            log.info("🔍 Searched for product: {}", productName);
-        } catch (Exception e) {
-            log.error("❌ Failed to search product: {}", productName, e);
-            throw e;
-        }
+        wait.until(ExpectedConditions.visibilityOfElementLocated(searchBox)).sendKeys(productName);
+        driver.findElement(searchBtn).click();
     }
 
     public void clickFirstProduct() {
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            wait.until(ExpectedConditions.elementToBeClickable(firstProduct)).click();
-            log.info("🛒 Clicked on the first product in search results.");
-        } catch (Exception e) {
-            log.error("❌ Failed to click on the first product", e);
-            throw e;
-        }
+        WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(20));
+        WebElement firstProduct = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("tUxRFH")));
+        firstProduct.click();
     }
+
 
     public void switchToNewTab() {
-        try {
-            ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
-            driver.switchTo().window(tabs.get(1));
-            log.info("🪟 Switched to new tab.");
-        } catch (Exception e) {
-            log.error("❌ Failed to switch to the new tab", e);
-            throw e;
+        for (String winHandle : driver.getWindowHandles()) {
+            driver.switchTo().window(winHandle);
         }
     }
 
-    public void addToCart() {
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            wait.until(ExpectedConditions.elementToBeClickable(addToCartBtn)).click();
-            log.info("🧺 Clicked 'Add to Cart' button.");
-        } catch (Exception e) {
-            log.error("❌ Failed to click 'Add to Cart' button.", e);
-            throw new RuntimeException("❌ Could not add item to cart.");
-        }
+    public void addToCart() throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        WebElement addToCartBtn = wait.until(ExpectedConditions
+                .elementToBeClickable(By.xpath("//button[contains(text(),'Add to cart') or contains(text(),'ADD TO CART')]")));
+        addToCartBtn.click();
+        Thread.sleep(2000); // or better: wait for a cart-specific element
+
     }
+
+
 
     public boolean isItemInCart() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            WebElement cartCount = wait.until(ExpectedConditions.visibilityOfElementLocated(cartTotalCount));
-            String countText = cartCount.getText();
-            boolean inCart = !countText.equals("0");
-            log.info("🛒 Cart item check: {} items in cart.", countText);
-            return inCart;
+            WebElement placeOrderBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//span[contains(text(),'Place Order')]")));
+            return placeOrderBtn.isDisplayed();
         } catch (Exception e) {
-            log.warn("⚠️ Failed to verify cart item count.", e);
             return false;
         }
     }
+
 }
+
+

@@ -1,28 +1,31 @@
 package tests;
 
-import base.TestBase;
+import base.BaseTest;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.FlipkartHomePage;
+
+import utils.DriverManager;
+
 import java.io.File;
 import java.io.IOException;
 
-
-public class FlipkartAddToCartTest extends TestBase {
+public class FlipkartAddToCartTest extends BaseTest {
 
     private static final Logger logger = LogManager.getLogger(FlipkartAddToCartTest.class);
 
     @Test
-    public void completeFlow() {
+    public void completeFlow() throws InterruptedException {
         logger.info("Navigating to Flipkart home page...");
-        driver.get("https://www.flipkart.com");
+        DriverManager.getDriver().get("https://www.flipkart.com");
 
-        FlipkartHomePage flipkart = new FlipkartHomePage(driver);
+        FlipkartHomePage flipkart = new FlipkartHomePage(DriverManager.getDriver());
 
         logger.info("Closing login popup if visible...");
         flipkart.loginPopupClose();
@@ -47,21 +50,19 @@ public class FlipkartAddToCartTest extends TestBase {
             captureScreenshot();
         }
 
-        Assert.assertTrue(productAdded,
-                "❌ Product was not added to cart. Check if the 'Add to Cart' button was clicked and cart updated.");
+        Assert.assertTrue(productAdded, "❌ Product was not added to cart. Check if the 'Add to Cart' button was clicked and cart updated.");
 
         logger.info("✅ Product successfully added to cart.");
     }
 
     private void captureScreenshot() {
         try {
-            TakesScreenshot ts = (TakesScreenshot) driver;
+            TakesScreenshot ts = (TakesScreenshot) DriverManager.getDriver();
             File screenshot = ts.getScreenshotAs(OutputType.FILE);
             FileUtils.copyFile(screenshot, new File("screenshots/" + "cart_check.png"));
-            logger.info("Screenshot saved to screenshots/{}", "cart_check.png");
+            logger.info("Screenshot saved to screenshots/cart_check.png");
         } catch (IOException e) {
             logger.error("Failed to capture screenshot: {}", e.getMessage(), e);
         }
     }
 }
-
