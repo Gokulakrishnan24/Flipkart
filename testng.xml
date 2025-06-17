@@ -34,9 +34,7 @@
 
     <listeners>
         <listener class-name="listeners.TestListener"/>
-    </listeners>
-    <listeners>
-        <listener class-name="listeners.RetryListener" />
+        <listener class-name="utils.RetryListener" />
     </listeners>
 
 </suite>

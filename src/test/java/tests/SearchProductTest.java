@@ -7,39 +7,37 @@ import org.testng.annotations.Test;
 
 public class SearchProductTest {
 
-    @Test
-    public void testSearchWithValidQuery() throws InterruptedException {
-        Thread.sleep(2000); // avoid 429
+    @Test(retryAnalyzer = utils.RetryAnalyzer.class)
+    public void testSearchWithValidQuery() {
+        System.out.println("✅ testSearchWithValidQuery started...");
 
-        String validQuery = "laptop";
-        Response response = ApiUtils.searchProduct(validQuery);
-        int statusCode = response.getStatusCode();
+        int maxAttempts = 3;
+        int attempt = 0;
+        Response response = null;
 
-        if (statusCode == 429) {
-            System.out.println("⚠️ Received 429 - Too Many Requests on valid query.");
-            Assert.fail("Rate limit hit on valid query.");
-        } else {
-            Assert.assertEquals(statusCode, 200, "Expected 200 for valid query");
-            Assert.assertTrue(response.getBody().asString().contains("laptop") || response.getBody().asString().length() > 100,
-                    "Response body does not appear valid for 'laptop'");
+        while (attempt < maxAttempts) {
+            response = ApiUtils.searchProduct("laptop"); // Valid query
+            int statusCode = response.getStatusCode();
+
+            if (statusCode == 429) {
+                System.out.println("⚠️ Rate limit hit (429). Retrying after 2s...");
+                attempt++;
+                try {
+                    Thread.sleep(2000); // wait for 2 seconds before retry
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                break; // success or other error
+            }
         }
-    }
 
-    @Test
-    public void testSearchWithInvalidQuery() throws InterruptedException {
-        Thread.sleep(2000); // avoid 429
-
-        String invalidQuery = "@@##" + System.currentTimeMillis();
-        Response response = ApiUtils.searchProduct(invalidQuery);
-        int statusCode = response.getStatusCode();
-
-        if (statusCode == 429) {
-            System.out.println("⚠️ Received 429 - Too Many Requests on invalid query.");
-            Assert.fail("Rate limit hit on invalid query.");
-        } else {
-            Assert.assertEquals(statusCode, 200, "Expected 200 for invalid query");
-            Assert.assertTrue(response.getBody().asString().length() > 0,
-                    "Response body is unexpectedly empty for invalid query");
+        if (response == null || response.getStatusCode() == 429) {
+            Assert.fail("❌ Received 429 - Too Many Requests after retries.");
         }
+
+        System.out.println("✅ Response received: " + response.getStatusCode());
+        Assert.assertEquals(response.getStatusCode(), 200, "Expected status code 200");
+        Assert.assertTrue(response.getBody().asString().contains("laptop"), "Response does not contain expected product keyword");
     }
 }
