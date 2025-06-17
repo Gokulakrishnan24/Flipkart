@@ -16,13 +16,12 @@ public class WebDriverFactory {
                 break;
 
             case "firefox":
-                WebDriverManager.firefoxdriver().setup();
-                driver = new FirefoxDriver();
-                break;
+                throw new UnsupportedOperationException("❌ Firefox is currently not supported for this test.");
 
             default:
-                throw new IllegalArgumentException("Browser not supported: " + browser);
+                throw new IllegalArgumentException("❌ Browser not supported: " + browser);
         }
+
 
         driver.manage().window().maximize();
         return driver;

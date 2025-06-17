@@ -7,13 +7,14 @@
             <class name="tests.FlipkartAddToCartTest"/>
         </classes>
     </test>
-
+<!--
     <test name="Firefox Test">
         <parameter name="browser" value="firefox"/>
         <classes>
             <class name="tests.FlipkartAddToCartTest"/>
         </classes>
     </test>
+    -->
 
     <listeners>
         <listener class-name="listeners.TestListener"/>

@@ -6,11 +6,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.FlipkartHomePage;
-
 import utils.DriverManager;
 
 import java.io.File;
@@ -42,25 +40,32 @@ public class FlipkartAddToCartTest extends BaseTest {
         logger.info("Attempting to add the product to cart...");
         flipkart.addToCart();
 
-        logger.info("Validating if the product was added to cart...");
-        boolean productAdded = flipkart.isItemInCart();
+        logger.info("Checking if item is added to cart...");
+        boolean isInCart = flipkart.isItemInCart();
 
-        if (!productAdded) {
+        if (!isInCart) {
             logger.warn("❌ Product was not added to the cart. Capturing screenshot...");
-            captureScreenshot();
+            captureScreenshot("cart_check");
         }
 
-        Assert.assertTrue(productAdded, "❌ Product was not added to cart. Check if the 'Add to Cart' button was clicked and cart updated.");
+        Assert.assertTrue(isInCart,
+                "❌ Product was not added to cart. Check if the 'Add to Cart' button was clicked and cart updated.");
 
         logger.info("✅ Product successfully added to cart.");
     }
 
-    private void captureScreenshot() {
+    private void captureScreenshot(String fileName) {
         try {
             TakesScreenshot ts = (TakesScreenshot) DriverManager.getDriver();
             File screenshot = ts.getScreenshotAs(OutputType.FILE);
-            FileUtils.copyFile(screenshot, new File("screenshots/" + "cart_check.png"));
-            logger.info("Screenshot saved to screenshots/cart_check.png");
+
+            File dir = new File("screenshots");
+            if (!dir.exists()) dir.mkdirs();
+
+            File destination = new File(dir, fileName + ".png");
+            FileUtils.copyFile(screenshot, destination);
+
+            logger.info("Screenshot saved to {}", destination.getAbsolutePath());
         } catch (IOException e) {
             logger.error("Failed to capture screenshot: {}", e.getMessage(), e);
         }
