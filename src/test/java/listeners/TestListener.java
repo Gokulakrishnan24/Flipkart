@@ -7,24 +7,48 @@ import org.testng.*;
 
 import utils.ExtentManager;
 
-public class TestListener implements ITestListener {
+public class TestListener implements ITestListener, ISuiteListener {
 
-    private static ExtentReports extent = ExtentManager.getInstance();
+    private static ExtentReports extent;
     private static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
 
-    public void onTestStart(ITestResult result) {
-        test.set(extent.createTest(result.getMethod().getMethodName()));
+    @Override
+    public void onStart(ISuite suite) {
+        extent = ExtentManager.getInstance();
     }
 
+    @Override
+    public void onTestStart(ITestResult result) {
+        ExtentTest extentTest = extent.createTest(
+                result.getTestClass().getName() + " :: " + result.getMethod().getMethodName());
+        test.set(extentTest);
+    }
+
+    @Override
     public void onTestSuccess(ITestResult result) {
         test.get().log(Status.PASS, "✅ Test Passed");
     }
 
+    @Override
     public void onTestFailure(ITestResult result) {
-        test.get().log(Status.FAIL, "❌ Test Failed: " + result.getThrowable());
+        test.get().log(Status.FAIL, "❌ Test Failed");
+        test.get().log(Status.FAIL, result.getThrowable());
     }
 
+    @Override
+    public void onTestSkipped(ITestResult result) {
+        test.get().log(Status.SKIP, "⚠️ Test Skipped");
+    }
+
+    @Override
     public void onFinish(ITestContext context) {
-        extent.flush();
+        // No need to flush here, done after full suite ends
+    }
+
+    @Override
+    public void onFinish(ISuite suite) {
+        if (extent != null) {
+            extent.flush(); // Important: generates the final report file
+        }
     }
 }
