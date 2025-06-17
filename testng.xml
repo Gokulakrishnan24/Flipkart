@@ -13,7 +13,7 @@
     </test>
     <test name="Flipkart Search API-UI Validation">
         <classes>
-            <class name="tests.FlipkartSearchValidationTest"/>
+            <class name="tests.SearchProductTest"/>
         </classes>
     </test>
 

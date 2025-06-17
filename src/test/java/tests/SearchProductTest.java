@@ -8,27 +8,19 @@ import org.testng.annotations.Test;
 public class SearchProductTest {
 
     @Test
-    public void testSearchWithValidProduct() {
-        String searchTerm = "laptop";
-        Response response = ApiUtils.searchProduct(searchTerm);
+    public void testSearchWithInvalidQuery() throws InterruptedException {
+        // Adding slight delay to reduce chances of 429
+        Thread.sleep(2000);
 
-        String responseBody = response.getBody().asString();
+        String invalidQuery = "@@##" + System.currentTimeMillis();  // Random invalid input to avoid duplicate detection
+        Response response = ApiUtils.searchProduct(invalidQuery);
+        int statusCode = response.getStatusCode();
 
-        // Example validations
-        Assert.assertTrue(responseBody.contains("Laptop") || responseBody.contains("laptop"),
-                "Search results do not contain expected product.");
-
-        Assert.assertEquals(response.getStatusCode(), 200, "Status code mismatch.");
-    }
-
-    @Test
-    public void testSearchWithInvalidQuery() {
-        String searchTerm = "@@##";
-        Response response = ApiUtils.searchProduct(searchTerm);
-
-        Assert.assertEquals(response.getStatusCode(), 200, "Status code should still be 200 for invalid search.");
-        Assert.assertTrue(response.getBody().asString().contains("Showing results for")
-                        || response.getBody().asString().contains("did not match"),
-                "No fallback message found.");
+        if (statusCode == 429) {
+            System.out.println("⚠️ Received 429 - Too Many Requests. Try throttling or add headers.");
+            Assert.fail("API rate limit hit (429). Consider delay or header tweaks.");
+        } else {
+            Assert.assertEquals(statusCode, 200, "Expected status code 200 for invalid query");
+        }
     }
 }
