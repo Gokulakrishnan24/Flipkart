@@ -1,5 +1,8 @@
 package base;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import utils.DriverManager;
 import factory.WebDriverFactory; // ✅ This was missing 'import'
 
@@ -20,7 +23,21 @@ import java.io.IOException;
 
 public class BaseTest {
 
+    protected ExtentReports extent;
+    protected ExtentTest test;
     private static final Logger log = LogManager.getLogger(BaseTest.class);
+
+    @BeforeSuite
+    public void setUpReport() {
+        ExtentSparkReporter reporter = new ExtentSparkReporter("test-output/ExtentReport.html");
+        extent = new ExtentReports();
+        extent.attachReporter(reporter);
+    }
+
+    @AfterSuite
+    public void flushReport() {
+        extent.flush();  // Generate the HTML report
+    }
 
     @Parameters("browser")
     @BeforeClass

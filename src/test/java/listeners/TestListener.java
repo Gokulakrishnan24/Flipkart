@@ -9,7 +9,7 @@ import utils.ExtentManager;
 
 public class TestListener implements ITestListener {
 
-    private static ExtentReports extent = ExtentManager.createInstance();
+    private static ExtentReports extent = ExtentManager.getInstance();
     private static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
 
     public void onTestStart(ITestResult result) {
