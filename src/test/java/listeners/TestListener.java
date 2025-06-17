@@ -4,6 +4,8 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import org.testng.*;
+import org.testng.IRetryAnalyzer;
+import org.testng.ITestResult;
 
 import utils.ExtentManager;
 

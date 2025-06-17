@@ -10,8 +10,11 @@ import pages.FlipkartHomePage;
 import utils.DriverManager;
 import java.io.File;
 import java.io.IOException;
-import com.aventstack.extentreports.Status;
+import listeners.RetryListener;
+import listeners.TestListener;
+import org.testng.annotations.Listeners;
 
+@Listeners({TestListener.class, RetryListener.class})
 public class FlipkartAddToCartTest extends BaseTest {
 
     @Test
