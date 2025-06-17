@@ -11,6 +11,12 @@
             <class name="tests.LoginPageTest"/>
         </classes>
     </test>
+    <test name="Flipkart Search API-UI Validation">
+        <classes>
+            <class name="tests.FlipkartSearchValidationTest"/>
+        </classes>
+    </test>
+
     <test name="Chrome Test">
         <parameter name="browser" value="chrome"/>
         <classes>

@@ -4,7 +4,7 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import drivers.DriverManager;
-import factory.WebDriverFactory; // ✅ This was missing 'import'
+import factory.WebDriverFactory;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.OutputType;
@@ -20,12 +20,11 @@ import org.testng.annotations.*;
 import java.io.File;
 import java.io.IOException;
 
-
 public class BaseTest {
 
     protected ExtentReports extent;
     protected ExtentTest test;
-    private static final Logger log = LogManager.getLogger(BaseTest.class);
+    public static final Logger log = LogManager.getLogger(BaseTest.class);
 
     @BeforeSuite
     public void setUpReport() {
@@ -72,7 +71,8 @@ public class BaseTest {
         }
     }
 
-    public WebDriver getDriver() {
+    // Optional convenience method to use in subclasses
+    protected WebDriver getDriver() {
         return DriverManager.getDriver();
     }
 }
