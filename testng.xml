@@ -6,6 +6,11 @@
             <class name="tests.FlipkartAddToCartTest"/>
         </classes>
     </test>
+    <test name="Login Test">
+        <classes>
+            <class name="tests.LoginPageTest"/>
+        </classes>
+    </test>
     <test name="Chrome Test">
         <parameter name="browser" value="chrome"/>
         <classes>
