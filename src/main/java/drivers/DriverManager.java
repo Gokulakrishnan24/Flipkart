@@ -1,4 +1,4 @@
-package utils;
+package drivers;
 
 import org.openqa.selenium.WebDriver;
 

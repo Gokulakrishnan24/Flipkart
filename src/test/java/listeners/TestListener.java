@@ -4,10 +4,7 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import org.testng.*;
-import org.testng.IRetryAnalyzer;
-import org.testng.ITestResult;
-
-import utils.ExtentManager;
+import reports.ExtentManager;
 
 public class TestListener implements ITestListener, ISuiteListener {
 
@@ -43,14 +40,13 @@ public class TestListener implements ITestListener, ISuiteListener {
     }
 
     @Override
-    public void onFinish(ITestContext context) {
-        // No need to flush here, done after full suite ends
-    }
-
-    @Override
     public void onFinish(ISuite suite) {
         if (extent != null) {
-            extent.flush(); // Important: generates the final report file
+            extent.flush(); // Finalize report
         }
+    }
+
+    public static ExtentTest getTestInstance() {
+        return test.get();
     }
 }

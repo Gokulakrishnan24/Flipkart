@@ -3,7 +3,7 @@ package base;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import utils.DriverManager;
+import drivers.DriverManager;
 import factory.WebDriverFactory; // ✅ This was missing 'import'
 
 import org.openqa.selenium.WebDriver;

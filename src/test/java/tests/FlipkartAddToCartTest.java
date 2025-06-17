@@ -5,58 +5,55 @@ import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import pages.FlipkartHomePage;
-import utils.DriverManager;
+import drivers.DriverManager;
+import utils.ExtentLogger;
 import java.io.File;
 import java.io.IOException;
-import listeners.RetryListener;
-import listeners.TestListener;
-import org.testng.annotations.Listeners;
 
-@Listeners({TestListener.class, RetryListener.class})
+@Listeners(listeners.TestListener.class)
 public class FlipkartAddToCartTest extends BaseTest {
 
     @Test
     public void completeFlow() {
-        test = extent.createTest("Flipkart Add to Cart Flow");
         try {
-            test.info("Navigating to Flipkart home page...");
+            ExtentLogger.info("Navigating to Flipkart home page...");
             DriverManager.getDriver().get("https://www.flipkart.com");
 
             FlipkartHomePage flipkart = new FlipkartHomePage(DriverManager.getDriver());
 
-            test.info("Closing login popup if visible...");
+            ExtentLogger.info("Closing login popup if visible...");
             flipkart.loginPopupClose();
 
-            test.info("Searching for product: iPhone 14");
+            ExtentLogger.info("Searching for product: iPhone 14");
             flipkart.searchProduct("iPhone 14");
 
-            test.info("Clicking on the first product from the search result...");
+            ExtentLogger.info("Clicking on the first product from the search result...");
             flipkart.clickFirstProduct();
 
-            test.info("Switching to new tab for product details...");
+            ExtentLogger.info("Switching to new tab for product details...");
             flipkart.switchToNewTab();
 
-            test.info("Attempting to add the product to cart...");
+            ExtentLogger.info("Attempting to add the product to cart...");
             flipkart.addToCart();
 
-            test.info("Checking if item is added to cart...");
+            ExtentLogger.info("Checking if item is added to cart...");
             boolean isInCart = flipkart.isItemInCart();
 
             if (!isInCart) {
-                test.warning("❌ Product was not added to the cart. Capturing screenshot...");
                 captureScreenshot("cart_check");
+                ExtentLogger.attachScreenshot("screenshots/cart_check.png", "❌ Product not added to cart");
             }
 
-            Assert.assertTrue(isInCart,
-                    "❌ Product was not added to cart. Check if the 'Add to Cart' button was clicked and cart updated.");
-
-            test.pass("✅ Product successfully added to cart.");
+            Assert.assertTrue(isInCart, "❌ Product was not added to cart.");
+            ExtentLogger.pass("✅ Product successfully added to cart.");
 
         } catch (Exception e) {
-            test.fail("❌ Test execution failed: " + e.getMessage());
             captureScreenshot("exception");
+            ExtentLogger.attachScreenshot("screenshots/exception.png", "❌ Exception occurred during test");
+            ExtentLogger.fail("❌ Test failed: " + e.getMessage());
             Assert.fail("Test failed due to exception: " + e.getMessage());
         }
     }
@@ -64,18 +61,14 @@ public class FlipkartAddToCartTest extends BaseTest {
     private void captureScreenshot(String fileName) {
         try {
             TakesScreenshot ts = (TakesScreenshot) DriverManager.getDriver();
-            File screenshot = ts.getScreenshotAs(OutputType.FILE);
-
+            File src = ts.getScreenshotAs(OutputType.FILE);
             File dir = new File("screenshots");
             if (!dir.exists()) dir.mkdirs();
 
-            File destination = new File(dir, fileName + ".png");
-            FileUtils.copyFile(screenshot, destination);
-
-            test.addScreenCaptureFromPath(destination.getAbsolutePath());
-            test.info("📸 Screenshot saved to: " + destination.getAbsolutePath());
+            File dest = new File(dir, fileName + ".png");
+            FileUtils.copyFile(src, dest);
         } catch (IOException e) {
-            test.info("❌ Failed to capture screenshot: " + e.getMessage());
+            ExtentLogger.fail("❌ Screenshot capture failed: " + e.getMessage());
         }
     }
 }

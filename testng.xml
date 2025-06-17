@@ -1,6 +1,11 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 <suite name="FlipkartTestSuite" parallel="tests" thread-count="2">
 
+    <test name="Add to Cart Test">
+        <classes>
+            <class name="tests.FlipkartAddToCartTest"/>
+        </classes>
+    </test>
     <test name="Chrome Test">
         <parameter name="browser" value="chrome"/>
         <classes>
